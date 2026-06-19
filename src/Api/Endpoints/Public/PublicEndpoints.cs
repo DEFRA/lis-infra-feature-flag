@@ -15,7 +15,9 @@ public static class PublicEndpoints
 {
     public static void UsePublicEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapGet(RouteNames.Evaluate + "/{group}", EvaluatedFeatureFlag)
+        const string environmentConstraint = "{environment:regex(^(?i)(DEV|TEST|EXT-TEST|PROD)$)}";
+
+        app.MapGet(RouteNames.Evaluate + $"/{{{environmentConstraint}}}/{{group}}", EvaluatedFeatureFlag)
             .WithName(OpenApiMetadata.GetUserProfileByIdRoute.Name)
             .WithTags(nameof(RouteNames.Evaluate))
             .WithSummary(OpenApiMetadata.GetUserProfileByIdRoute.Summary)
@@ -23,15 +25,7 @@ public static class PublicEndpoints
             .Produces<EvaluationResult>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)
             .ProducesProblem(StatusCodes.Status404NotFound);
 
-        app.MapGet(RouteNames.Evaluate + "/{group}/{flag}", EvaluatedFeatureFlag)
-            .WithName(OpenApiMetadata.GetUserProfileByIdRoute.Name)
-            .WithTags(nameof(RouteNames.Evaluate))
-            .WithSummary(OpenApiMetadata.GetUserProfileByIdRoute.Summary)
-            .WithDescription(OpenApiMetadata.GetUserProfileByIdRoute.Description)
-            .Produces<EvaluationResult>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)
-            .ProducesProblem(StatusCodes.Status404NotFound);
-
-        app.MapGet(RouteNames.Evaluate + "/{group}/{flag}/{environment}", EvaluatedFeatureFlag)
+        app.MapGet(RouteNames.Evaluate + $"/{{{environmentConstraint}}}/{{group}}/{{flag}}", EvaluatedFeatureFlag)
             .WithName(OpenApiMetadata.GetUserProfileByIdRoute.Name)
             .WithTags(nameof(RouteNames.Evaluate))
             .WithSummary(OpenApiMetadata.GetUserProfileByIdRoute.Summary)
