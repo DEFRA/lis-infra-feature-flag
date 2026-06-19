@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Api/Api.csproj" />
+    <Project Path="src/Models/Models.csproj" />
+    <Project Path="src/Repositories/Repositories.csproj" />
+    <Project Path="src/Services/Services.csproj" />
+    <Project Path="src\Database\Database.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Api.Tests/Api.Tests.csproj" />
+    <Project Path="tests/Database.PostgreSQL.Tests/Database.PostgreSQL.Tests.csproj" />
+    <Project Path="tests/Models.Tests/Models.Tests.csproj" />
+    <Project Path="tests/Repositories.Tests/Repositories.Tests.csproj" />
+    <Project Path="tests/Services.Tests/Services.Tests.csproj" />
+  </Folder>
+</Solution>
