@@ -10,6 +10,8 @@ public class FeatureFlagStatuses
 {
     public Guid Id { get; set; }
 
+    public Guid? ProductId { get; set; }
+
     public Guid GroupId { get; set; }
 
     public Guid? FlagId { get; set; }
@@ -27,6 +29,8 @@ public class FeatureFlagStatuses
     public DateTime UpdatedAt { get; set; }
 
     public string UpdatedBy { get; set; } = null!;
+
+    public Products? Product { get; set; }
 
     public FeatureGroups Group { get; set; } = null!;
 

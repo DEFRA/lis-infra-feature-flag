@@ -36,12 +36,11 @@ public class PublicEndpointsTests
             .OrderBy(pattern => pattern)
             .ToList();
 
-        endpoints.Count.ShouldBe(3);
+        endpoints.Count.ShouldBe(2);
         routePatterns.ShouldBe(
         [
-            "evaluate/{group}",
-            "evaluate/{group}/{flag}",
-            "evaluate/{group}/{flag}/{environment}",
+            "evaluate/{environment:regex(^(DEV|TEST|EXT-TEST|PROD)$)}/{group}",
+            "evaluate/{environment:regex(^(DEV|TEST|EXT-TEST|PROD)$)}/{group}/{flag}",
         ]);
         endpoints.All(endpoint => endpoint.Metadata.GetMetadata<IEndpointNameMetadata>()?.EndpointName == OpenApiMetadata.GetUserProfileByIdRoute.Name)
             .ShouldBeTrue();

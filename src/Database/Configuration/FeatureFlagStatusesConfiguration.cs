@@ -39,6 +39,11 @@ public class FeatureFlagStatusesConfiguration : IEntityTypeConfiguration<Feature
             .HasColumnType(ColumnTypes.UniqueIdentifier)
             .HasDefaultValueSql("uuid_generate_v4()");
 
+        builder.Property(status => status.ProductId)
+            .HasColumnName(nameof(FeatureFlagStatuses.ProductId).ToSnakeCase())
+            .HasColumnType(ColumnTypes.UniqueIdentifier)
+            .IsRequired();
+
         builder.Property(status => status.GroupId)
             .HasColumnName(nameof(FeatureFlagStatuses.GroupId).ToSnakeCase())
             .HasColumnType(ColumnTypes.UniqueIdentifier)
@@ -80,8 +85,10 @@ public class FeatureFlagStatusesConfiguration : IEntityTypeConfiguration<Feature
             .HasColumnType(ColumnTypes.Text)
             .IsRequired();
 
-        builder.HasIndex(status => new { status.GroupId, status.FlagId, status.EnvironmentId })
-            .IsUnique();
+        builder.HasOne(status => status.Product)
+            .WithMany(prd => prd.FeatureFlagStatuses)
+            .HasForeignKey(status => status.ProductId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(status => status.Group)
             .WithMany(group => group.FeatureFlagStatuses)

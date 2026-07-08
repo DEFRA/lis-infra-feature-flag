@@ -1,6 +1,9 @@
 -- liquibase formatted sql
 
 -- changeset system:initial-seed-3
+INSERT INTO products (id, name, description) VALUES
+  ('89a3622a-00c4-405b-be14-dcb31be6e4f5', 'LIS', 'The Livestock Information System');
+
 INSERT INTO environments (id, name, description) VALUES
   ('429e63ac-4046-472c-8a47-5ae29a8d1024', 'dev', 'The Development Environment'),
   ('71eefac2-a066-4de4-bde4-369d45e1e5bc', 'test', 'The Test Environment'),

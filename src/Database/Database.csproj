@@ -1,6 +1,1 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <ItemGroup>
-    <Folder Include="Configuration\" />
-    <Folder Include="Entities\" />
-  </ItemGroup>
-</Project>
+﻿<Project Sdk="Microsoft.NET.Sdk" />

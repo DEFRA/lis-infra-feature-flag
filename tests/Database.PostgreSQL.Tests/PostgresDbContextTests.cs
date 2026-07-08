@@ -20,6 +20,7 @@ public class PostgresDbContextTests
 
         context.Model.GetDefaultSchema().ShouldBe("public");
         context.Environments.ShouldNotBeNull();
+        context.Products.ShouldNotBeNull();
         context.FeatureGroups.ShouldNotBeNull();
         context.FeatureFlags.ShouldNotBeNull();
         context.FeatureFlagStatuses.ShouldNotBeNull();
@@ -30,16 +31,30 @@ public class PostgresDbContextTests
         statusEntity.GetCheckConstraints().Count().ShouldBe(3);
         statusEntity.FindProperty(nameof(FeatureFlagStatuses.UpdatedBy))!.GetColumnType().ShouldBe(ColumnTypes.Text);
         statusEntity.FindProperty(nameof(FeatureFlagStatuses.UpdatedAt))!.GetColumnType().ShouldBe(ColumnTypes.DateTimeOffSet);
-        statusEntity.GetIndexes().Single(index => index.IsUnique).Properties.Select(property => property.Name)
-            .ShouldBe([nameof(FeatureFlagStatuses.GroupId), nameof(FeatureFlagStatuses.FlagId), nameof(FeatureFlagStatuses.EnvironmentId)]);
+        statusEntity.GetForeignKeys().Select(foreignKey => foreignKey.PrincipalEntityType.ClrType)
+            .OrderBy(type => type.Name)
+            .ShouldBe([typeof(Environments), typeof(FeatureFlags), typeof(FeatureGroups), typeof(Products)]);
+
+        var productEntity = designTimeModel.FindEntityType(typeof(Products));
+        productEntity.ShouldNotBeNull();
+        productEntity!.GetTableName().ShouldBe("products");
+
+        var groupEntity = designTimeModel.FindEntityType(typeof(FeatureGroups));
+        groupEntity.ShouldNotBeNull();
+        groupEntity!.GetTableName().ShouldBe("feature_groups");
+        groupEntity.GetForeignKeys().Single().PrincipalEntityType.ClrType.ShouldBe(typeof(Products));
 
         var flagEntity = designTimeModel.FindEntityType(typeof(FeatureFlags));
         flagEntity.ShouldNotBeNull();
         flagEntity!.GetTableName().ShouldBe("feature_flags");
-        flagEntity.GetForeignKeys().Single().PrincipalEntityType.ClrType.ShouldBe(typeof(FeatureGroups));
+        flagEntity.GetForeignKeys().Select(foreignKey => foreignKey.PrincipalEntityType.ClrType)
+            .OrderBy(type => type.Name)
+            .ShouldBe([typeof(FeatureGroups), typeof(Products)]);
 
         designTimeModel.GetEntityTypes().Select(entity => entity.GetTableName())
             .ShouldContain("environments");
+        designTimeModel.GetEntityTypes().Select(entity => entity.GetTableName())
+            .ShouldContain("products");
         designTimeModel.GetEntityTypes().Select(entity => entity.GetTableName())
             .ShouldContain("feature_groups");
     }

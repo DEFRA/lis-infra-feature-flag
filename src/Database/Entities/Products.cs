@@ -1,10 +1,10 @@
-// <copyright file="FeatureFlags.cs" company="Defra">
+// <copyright file="Products.cs" company="Defra">
 // Copyright (c) Defra. All rights reserved.
 // </copyright>
 
 namespace Lis.Infra.FeatureFlag.Database.Entities;
 
-public class FeatureFlags
+public class Products
 {
     public Guid Id { get; set; }
 
@@ -12,13 +12,9 @@ public class FeatureFlags
 
     public string? Description { get; set; }
 
-    public Guid? GroupId { get; set; }
+    public ICollection<FeatureGroups> FeatureGroups { get; set; } = new List<FeatureGroups>();
 
-    public FeatureGroups? Group { get; set; }
-
-    public Guid? ProductId { get; set; }
-
-    public Products? Product { get; set; }
+    public ICollection<FeatureFlags> FeatureFlags { get; set; } = new List<FeatureFlags>();
 
     public ICollection<FeatureFlagStatuses> FeatureFlagStatuses { get; set; } = new List<FeatureFlagStatuses>();
 }

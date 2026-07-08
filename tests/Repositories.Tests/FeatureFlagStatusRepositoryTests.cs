@@ -18,6 +18,7 @@ public class FeatureFlagStatusRepositoryTests
     public async Task GetFlagsTask_ShouldReturnMatchingFlagsWithRelatedEntities()
     {
         var databaseName = Guid.NewGuid().ToString();
+        var productId = Guid.NewGuid();
         await using (var writeContext = new PostgresDbContext(CreateOptions<PostgresDbContext>(databaseName)))
         {
             var paymentsGroup = new FeatureGroups
@@ -25,12 +26,14 @@ public class FeatureFlagStatusRepositoryTests
                 Id = Guid.NewGuid(),
                 Name = "Payments",
                 Description = "Payments feature group",
+                ProductId = productId,
             };
             var ordersGroup = new FeatureGroups
             {
                 Id = Guid.NewGuid(),
                 Name = "Orders",
                 Description = "Orders feature group",
+                ProductId = productId,
             };
             var production = new Environments
             {
@@ -42,12 +45,14 @@ public class FeatureFlagStatusRepositoryTests
                 Id = Guid.NewGuid(),
                 Name = "NewUi",
                 GroupId = paymentsGroup.Id,
+                ProductId = productId,
             };
             var otherFlag = new FeatureFlags
             {
                 Id = Guid.NewGuid(),
                 Name = "AnotherFlag",
                 GroupId = ordersGroup.Id,
+                ProductId = productId,
             };
 
             await writeContext.AddRangeAsync(paymentsGroup, ordersGroup, production, newUiFlag, otherFlag);
@@ -55,6 +60,7 @@ public class FeatureFlagStatusRepositoryTests
                 new FeatureFlagStatuses
                 {
                     Id = Guid.NewGuid(),
+                    ProductId = productId,
                     GroupId = paymentsGroup.Id,
                     EnvironmentId = production.Id,
                     ActivationType = ActivationType.Manual,
@@ -64,6 +70,7 @@ public class FeatureFlagStatusRepositoryTests
                 new FeatureFlagStatuses
                 {
                     Id = Guid.NewGuid(),
+                    ProductId = productId,
                     GroupId = paymentsGroup.Id,
                     FlagId = newUiFlag.Id,
                     EnvironmentId = production.Id,
@@ -74,6 +81,7 @@ public class FeatureFlagStatusRepositoryTests
                 new FeatureFlagStatuses
                 {
                     Id = Guid.NewGuid(),
+                    ProductId = productId,
                     GroupId = ordersGroup.Id,
                     FlagId = otherFlag.Id,
                     ActivationType = ActivationType.Manual,

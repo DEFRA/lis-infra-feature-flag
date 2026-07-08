@@ -26,12 +26,17 @@ public class FeatureFlagsConfiguration : IEntityTypeConfiguration<FeatureFlags>
             .HasColumnName(nameof(FeatureFlags.Description).ToSnakeCase())
             .HasColumnType(ColumnTypes.Text);
 
+        builder.Property(flag => flag.ProductId)
+            .HasColumnName(nameof(FeatureFlags.ProductId).ToSnakeCase())
+            .HasColumnType(ColumnTypes.UniqueIdentifier);
+
+        builder.HasOne(flag => flag.Product)
+            .WithMany(prd => prd.FeatureFlags)
+            .HasForeignKey(flag => flag.ProductId);
+
         builder.Property(flag => flag.GroupId)
             .HasColumnName(nameof(FeatureFlags.GroupId).ToSnakeCase())
             .HasColumnType(ColumnTypes.UniqueIdentifier);
-
-        builder.HasIndex(flag => flag.Name)
-            .IsUnique();
 
         builder.HasOne(flag => flag.Group)
             .WithMany(group => group.FeatureFlags)
