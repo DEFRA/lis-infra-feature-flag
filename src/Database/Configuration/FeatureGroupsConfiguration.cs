@@ -26,7 +26,9 @@ public class FeatureGroupsConfiguration : IEntityTypeConfiguration<FeatureGroups
             .HasColumnName(nameof(FeatureGroups.Description).ToSnakeCase())
             .HasColumnType(ColumnTypes.Text);
 
-        builder.HasIndex(group => group.Name)
-            .IsUnique();
+        builder.HasOne(group => group.Product)
+            .WithMany(prd => prd.FeatureGroups)
+            .HasForeignKey(group => group.ProductId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

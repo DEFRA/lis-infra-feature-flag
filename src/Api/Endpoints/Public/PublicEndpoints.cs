@@ -15,7 +15,7 @@ public static class PublicEndpoints
 {
     public static void UsePublicEndpoints(this IEndpointRouteBuilder app)
     {
-        const string environmentConstraint = "{environment:regex(^(?i)(DEV|TEST|EXT-TEST|PROD)$)}";
+        const string environmentConstraint = "environment:regex(^(DEV|TEST|EXT-TEST|PROD)$)";
 
         app.MapGet(RouteNames.Evaluate + $"/{{{environmentConstraint}}}/{{group}}", EvaluatedFeatureFlag)
             .WithName(OpenApiMetadata.GetUserProfileByIdRoute.Name)

@@ -12,6 +12,10 @@ public class FeatureGroups
 
     public string? Description { get; set; }
 
+    public Guid? ProductId { get; set; }
+
+    public Products? Product { get; set; }
+
     public ICollection<FeatureFlags> FeatureFlags { get; set; } = new List<FeatureFlags>();
 
     public ICollection<FeatureFlagStatuses> FeatureFlagStatuses { get; set; } = new List<FeatureFlagStatuses>();

@@ -9,6 +9,8 @@ public abstract class PostgresDbContextBase<T>(DbContextOptions<T> options) : Db
 {
     public virtual DbSet<Environments> Environments { get; set; }
 
+    public virtual DbSet<Products> Products { get; set; }
+
     public virtual DbSet<FeatureGroups> FeatureGroups { get; set; }
 
     public virtual DbSet<FeatureFlags> FeatureFlags { get; set; }
