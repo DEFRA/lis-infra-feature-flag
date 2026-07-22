@@ -1,4 +1,4 @@
-// <copyright file="FeatureFlagStatuesRepository.cs" company="Defra">
+// <copyright file="FeatureFlagStatusRepository.cs" company="Defra">
 // Copyright (c) Defra. All rights reserved.
 // </copyright>
 
@@ -15,11 +15,11 @@ public partial class FeatureFlagStatusRepository(
     ILogger<FeatureFlagStatusRepository> logger)
     : IFeatureFlagStatusRepository
 {
-    public async Task<List<FeatureFlagStatuses>?> GetFlagsTask(
+    public async Task<List<FeatureFlagStatuses>> GetList(
         Expression<Func<FeatureFlagStatuses, bool>> predicate,
         CancellationToken cancellationToken = default)
     {
-        LogGettingSingleCountyParishHolding();
+        LogGettingListOfFeatureFlagStatuses();
 
         var result = await readOnlyContext.FeatureFlagStatuses
             .AsSplitQuery()

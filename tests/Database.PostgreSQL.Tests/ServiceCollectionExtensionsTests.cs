@@ -2,7 +2,7 @@
 // Copyright (c) Defra. All rights reserved.
 // </copyright>
 
-namespace Lis.Infra.FeatureFlag.Database.PostgreSql.Tests;
+namespace Lis.Infra.FeatureFlag.Database.PostgreSQL.Tests;
 
 using Amazon.Runtime;
 using Microsoft.EntityFrameworkCore;

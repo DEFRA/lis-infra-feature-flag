@@ -4,12 +4,7 @@
 
 namespace Lis.Infra.FeatureFlag.Repositories.FeatureFlagStatuses;
 
-using System.Linq.Expressions;
+using Defra.Livestock.Sdk.Api.Strategies.Abstractions.Repositories;
 using Lis.Infra.FeatureFlag.Database.Entities;
 
-public interface IFeatureFlagStatusRepository
-{
-    Task<List<FeatureFlagStatuses>?> GetFlagsTask(
-        Expression<Func<FeatureFlagStatuses, bool>> predicate,
-        CancellationToken cancellationToken = default);
-}
+public interface IFeatureFlagStatusRepository : IRepoListable<FeatureFlagStatuses>;

@@ -7,6 +7,8 @@ namespace Lis.Infra.FeatureFlag.Api.Middleware.Headers;
 public static class RequestHeaderNames
 {
     public const string CorrelationId = "x-correlation-id";
-    public const string OperatorId = "x-operator-id";
     public const string ApiKey = "x-api-key";
+
+    public const string ProductName = "product-name";
+    public const string EnvironmentName = "environment-name";
 }

@@ -12,28 +12,26 @@ public class EvaluationContractsTests
     [Fact]
     public void EvaluationRequest_ShouldStoreProvidedValues()
     {
-        var request = new EvaluationRequest
+        var request = new GetFeatureFlagStatus
         {
-            Group = "Payments",
-            Flag = "NewUi",
-            Environment = "Prod",
+            GroupName = "Payments",
+            FlagName = "NewUi",
+            EnvironmentName = "Prod",
         };
 
-        request.Group.ShouldBe("Payments");
-        request.Flag.ShouldBe("NewUi");
-        request.Environment.ShouldBe("Prod");
+        request.GroupName.ShouldBe("Payments");
+        request.FlagName.ShouldBe("NewUi");
+        request.EnvironmentName.ShouldBe("Prod");
     }
 
     [Fact]
     public void EvaluationResult_ShouldStoreProvidedValues()
     {
-        var result = new EvaluationResult
+        var result = new FeatureFlagStatusResult
         {
-            Success = true,
-            IsEnabled = true,
+            FlagEnabled = true,
         };
 
-        result.Success.ShouldBeTrue();
-        result.IsEnabled.ShouldBeTrue();
+        result.FlagEnabled.ShouldBeTrue();
     }
 }

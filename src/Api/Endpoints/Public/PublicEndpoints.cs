@@ -5,7 +5,7 @@
 namespace Lis.Infra.FeatureFlag.Api.Endpoints.Public;
 
 using System.Net.Mime;
-using Defra.Identity.Api.Endpoints.Profiles;
+using Lis.Infra.FeatureFlag.Api.Filters;
 using Lis.Infra.FeatureFlag.Models.Requests;
 using Lis.Infra.FeatureFlag.Models.Responses;
 using Lis.Infra.FeatureFlag.Services;
@@ -15,31 +15,49 @@ public static class PublicEndpoints
 {
     public static void UsePublicEndpoints(this IEndpointRouteBuilder app)
     {
-        const string environmentConstraint = "environment:regex(^(DEV|TEST|EXT-TEST|PROD)$)";
-
-        app.MapGet(RouteNames.Evaluate + $"/{{{environmentConstraint}}}/{{group}}", EvaluatedFeatureFlag)
-            .WithName(OpenApiMetadata.GetUserProfileByIdRoute.Name)
+        app.MapGet(
+                RouteNames.Evaluate + $"/{{groupName}}",
+                GetFeatureFlagGroupStatusRoute)
+            .WithName(OpenApiMetadata.GetFeatureFlagGroupStatusRoute.Name)
             .WithTags(nameof(RouteNames.Evaluate))
-            .WithSummary(OpenApiMetadata.GetUserProfileByIdRoute.Summary)
-            .WithDescription(OpenApiMetadata.GetUserProfileByIdRoute.Description)
-            .Produces<EvaluationResult>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)
+            .WithSummary(OpenApiMetadata.GetFeatureFlagGroupStatusRoute.Summary)
+            .WithDescription(OpenApiMetadata.GetFeatureFlagGroupStatusRoute.Description)
+            .AddEndpointFilter<RequestHeaderMappingFilter<GetFeatureFlagGroupStatus>>()
+            .AddEndpointFilter<ValidationFilter<GetFeatureFlagGroupStatus>>()
+            .Produces<FeatureFlagGroupStatusResult>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)
             .ProducesProblem(StatusCodes.Status404NotFound);
 
-        app.MapGet(RouteNames.Evaluate + $"/{{{environmentConstraint}}}/{{group}}/{{flag}}", EvaluatedFeatureFlag)
-            .WithName(OpenApiMetadata.GetUserProfileByIdRoute.Name)
+        app.MapGet(
+                RouteNames.Evaluate + $"/{{groupName}}/{{flagName}}",
+                GetFeatureFlagStatusRoute)
+            .WithName(OpenApiMetadata.GetFeatureFlagStatusRoute.Name)
             .WithTags(nameof(RouteNames.Evaluate))
-            .WithSummary(OpenApiMetadata.GetUserProfileByIdRoute.Summary)
-            .WithDescription(OpenApiMetadata.GetUserProfileByIdRoute.Description)
-            .Produces<EvaluationResult>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)
+            .WithSummary(OpenApiMetadata.GetFeatureFlagStatusRoute.Summary)
+            .WithDescription(OpenApiMetadata.GetFeatureFlagStatusRoute.Description)
+            .AddEndpointFilter<RequestHeaderMappingFilter<GetFeatureFlagStatus>>()
+            .AddEndpointFilter<ValidationFilter<GetFeatureFlagStatus>>()
+            .Produces<FeatureFlagStatusResult>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)
             .ProducesProblem(StatusCodes.Status404NotFound);
     }
 
-    private static async Task<IResult> EvaluatedFeatureFlag(
-        [AsParameters] EvaluationRequest request,
-        [FromServices] IFeatureService service,
+    private static async Task<IResult> GetFeatureFlagGroupStatusRoute(
+        [AsParameters] GetFeatureFlagGroupStatus request,
+        [FromServices] IFeatureFlagService featureFlagService,
         CancellationToken cancellationToken = default)
     {
-        var result = await service.EvaluateFeatureFlagTask(
+        var result = await featureFlagService.GetFeatureFlagGroupStatus(
+            request,
+            cancellationToken);
+
+        return Results.Ok(result);
+    }
+
+    private static async Task<IResult> GetFeatureFlagStatusRoute(
+        [AsParameters] GetFeatureFlagStatus request,
+        [FromServices] IFeatureFlagService featureFlagService,
+        CancellationToken cancellationToken = default)
+    {
+        var result = await featureFlagService.GetFeatureFlagStatus(
             request,
             cancellationToken);
 

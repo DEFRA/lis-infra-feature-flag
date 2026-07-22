@@ -5,7 +5,6 @@
 namespace Lis.Infra.FeatureFlag.Api.Tests;
 
 using System.Reflection;
-using Defra.Identity.Api.Endpoints.Profiles;
 using Lis.Infra.FeatureFlag.Api.Endpoints.Public;
 using Lis.Infra.FeatureFlag.Models.Requests;
 using Lis.Infra.FeatureFlag.Models.Responses;
@@ -39,39 +38,39 @@ public class PublicEndpointsTests
         endpoints.Count.ShouldBe(2);
         routePatterns.ShouldBe(
         [
-            "evaluate/{environment:regex(^(DEV|TEST|EXT-TEST|PROD)$)}/{group}",
-            "evaluate/{environment:regex(^(DEV|TEST|EXT-TEST|PROD)$)}/{group}/{flag}",
+            "evaluate/{environment:regex(^(?i)(DEV|TEST|EXT-TEST|PROD)$)}/{group}",
+            "evaluate/{environment:regex(^(?i)(DEV|TEST|EXT-TEST|PROD)$)}/{group}/{flag}",
         ]);
-        endpoints.All(endpoint => endpoint.Metadata.GetMetadata<IEndpointNameMetadata>()?.EndpointName == OpenApiMetadata.GetUserProfileByIdRoute.Name)
+        endpoints.All(endpoint => endpoint.Metadata.GetMetadata<IEndpointNameMetadata>()?.EndpointName ==
+                                  OpenApiMetadata.GetFeatureFlagGroupStatusRoute.Name)
             .ShouldBeTrue();
-        endpoints.All(endpoint => endpoint.Metadata.GetMetadata<IEndpointSummaryMetadata>()?.Summary == OpenApiMetadata.GetUserProfileByIdRoute.Summary)
+        endpoints.All(endpoint => endpoint.Metadata.GetMetadata<IEndpointSummaryMetadata>()?.Summary ==
+                                  OpenApiMetadata.GetFeatureFlagGroupStatusRoute.Summary)
             .ShouldBeTrue();
-        endpoints.All(endpoint => endpoint.Metadata.GetMetadata<IEndpointDescriptionMetadata>()?.Description == OpenApiMetadata.GetUserProfileByIdRoute.Description)
+        endpoints.All(endpoint => endpoint.Metadata.GetMetadata<IEndpointDescriptionMetadata>()?.Description ==
+                                  OpenApiMetadata.GetFeatureFlagGroupStatusRoute.Description)
             .ShouldBeTrue();
-        endpoints.All(endpoint => endpoint.Metadata.GetMetadata<HttpMethodMetadata>()!.HttpMethods.Single() == HttpMethods.Get)
+        endpoints.All(endpoint =>
+                endpoint.Metadata.GetMetadata<HttpMethodMetadata>()!.HttpMethods.Single() == HttpMethods.Get)
             .ShouldBeTrue();
     }
 
     [Fact]
     public async Task EvaluatedFeatureFlag_ShouldReturnOkResultFromService()
     {
-        var service = Substitute.For<IFeatureService>();
-        service.EvaluateFeatureFlagTask(Arg.Any<EvaluationRequest>(), Arg.Any<CancellationToken>())
-            .Returns(new EvaluationResult { Success = true, IsEnabled = true });
-        var method = typeof(PublicEndpoints).GetMethod("EvaluatedFeatureFlag", BindingFlags.NonPublic | BindingFlags.Static);
-        var request = new EvaluationRequest
-        {
-            Group = "Payments",
-            Flag = "NewUi",
-            Environment = "Prod",
-        };
+        var service = Substitute.For<IFeatureFlagService>();
+        service.GetFeatureFlagStatus(Arg.Any<GetFeatureFlagStatus>(), Arg.Any<CancellationToken>())
+            .Returns(new FeatureFlagStatusResult { FlagEnabled = true });
+        var method = typeof(PublicEndpoints).GetMethod("EvaluateFeatureFlagStatusByGroupAndFlag",
+            BindingFlags.NonPublic | BindingFlags.Static);
+        var request = new GetFeatureFlagStatus { GroupName = "Payments", FlagName = "NewUi", EnvironmentName = "Prod", };
 
         method.ShouldNotBeNull();
 
         var task = (Task<IResult>)method!.Invoke(null, [request, service, TestContext.Current.CancellationToken])!;
         var result = await task;
-        var okResult = result.ShouldBeOfType<Ok<EvaluationResult>>();
+        var okResult = result.ShouldBeOfType<Ok<FeatureFlagStatusResult>>();
 
-        okResult.Value.ShouldBe(new EvaluationResult { Success = true, IsEnabled = true });
+        okResult.Value.ShouldBe(new FeatureFlagStatusResult { FlagEnabled = true });
     }
 }

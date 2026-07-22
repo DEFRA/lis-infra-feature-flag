@@ -6,11 +6,11 @@ namespace Lis.Infra.FeatureFlag.Api;
 
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
-using FluentValidation;
+using Lis.Infra.FeatureFlag.Api.Endpoints.Public;
 using Lis.Infra.FeatureFlag.Api.Exceptions;
-using Lis.Infra.FeatureFlag.Api.Utils.Http;
 using Lis.Infra.FeatureFlag.Api.Utils.Logging;
 using Lis.Infra.FeatureFlag.Database;
+using Lis.Infra.FeatureFlag.Models;
 using Lis.Infra.FeatureFlag.Repositories;
 using Lis.Infra.FeatureFlag.Services;
 using Serilog;
@@ -18,6 +18,10 @@ using Serilog;
 [ExcludeFromCodeCoverage]
 public class Program
 {
+    protected Program()
+    {
+    }
+
     public static async Task Main(string[] args)
     {
         var app = CreateWebApplication(args);
@@ -54,54 +58,27 @@ public class Program
         builder.Host.UseSerilog(CdpLogging.Configuration);
         builder.Services.AddProblemDetails();
         builder.Services.AddExceptionHandler<ApiExceptionHandler>();
-        builder.Services.ConfigureHttpJsonOptions(
-            options =>
-            {
-                options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower;
-                options.SerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.SnakeCaseLower;
-            });
-
-        // Default HTTP Client
-        builder.Services
-            .AddHttpClient("DefaultClient")
-            .AddHeaderPropagation();
-
-        // Proxy HTTP Client
-        builder.Services.AddTransient<ProxyHttpMessageHandler>();
-        builder.Services
-            .AddHttpClient("proxy")
-            .ConfigurePrimaryHttpMessageHandler<ProxyHttpMessageHandler>();
-
-        // Propagate trace header.
-        builder.Services.AddHeaderPropagation(
-            options =>
-            {
-                var traceHeader = builder.Configuration.GetValue<string>("TraceHeader");
-                if (!string.IsNullOrWhiteSpace(traceHeader))
-                {
-                    options.Headers.Add(traceHeader);
-                }
-            });
+        builder.Services.ConfigureHttpJsonOptions(options =>
+        {
+            options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower;
+            options.SerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.SnakeCaseLower;
+        });
 
         // Add custom services
         builder.Services
             .AddPostgresDatabase(configuration)
-            .AddServices(configuration);
-
-        // Add support services
-        builder.Services.AddValidatorsFromAssemblyContaining<Program>();
-
-        // Set up the endpoints and their dependencies
-        builder.Services.AddRepositories(configuration);
+            .AddRepositories(configuration)
+            .AddServices(configuration)
+            .AddValidators();
     }
 
     [ExcludeFromCodeCoverage]
     private static WebApplication SetupApplication(WebApplication app)
     {
         app.UseSerilogRequestLogging();
-        app.UseHeaderPropagation();
         app.UseExceptionHandler();
         app.UseRouting();
+        app.UsePublicEndpoints();
 
         return app;
     }

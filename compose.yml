@@ -21,25 +21,25 @@ services:
     networks:
       - cdp-tenant
 
-postgres:
-  image: postgres:16-alpine
-  ports:
-    - '5432:5432'
-  environment:
-    POSTGRES_USER: lis_infra_feature_flag_ddl
-    POSTGRES_PASSWORD: postgres
-    POSTGRES_DB: lis_infra_feature_flag
-  networks:
-    - cdp-tenant
-  volumes:
-    - postgres-data:/data
-  restart: always
-  healthcheck:
-    test: [ "CMD-SHELL", "pg_isready -U lis_infra_feature_flag_ddl -d lis_infra_feature_flag" ]
-    interval: 10s
-    timeout: 5s
-    retries: 5
-    start_period: 10s
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: lis_infra_feature_flag_ddl
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: lis_infra_feature_flag
+    networks:
+      - cdp-tenant
+    volumes:
+      - postgres-data:/data
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U lis_infra_feature_flag_ddl -d lis_infra_feature_flag" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
   
   liquibase:
     image: liquibase/liquibase:5.0.1
@@ -55,17 +55,18 @@ postgres:
     networks:
       - cdp-tenant
   
-  identity-service-helper:
-    container_name: identity-lis_infra_feature_flag-helper
+  lis-infra-feature-flag-service:
+    container_name: lis-infra-feature-flag-service
     platform: linux
-    build: ./
+    build:
+      context: ./
     ports:
       - '8080:8080'
     links:
       - 'floci:floci'
       - 'postgres:postgres'
     depends_on:
-      localstack:
+      floci:
         condition: service_healthy
       postgres:
         condition: service_started

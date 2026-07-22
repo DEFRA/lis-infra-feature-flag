@@ -20,6 +20,7 @@ COPY . .
 WORKDIR "/"
 
 FROM build AS publish
+RUN dotnet nuget add source http://host.docker.internal:5555/v3/index.json --allow-insecure-connections
 RUN dotnet publish src/Api -c Release -o /app/publish /p:UseAppHost=false
 
 ENV ASPNETCORE_FORWARDEDHEADERS_ENABLED=true

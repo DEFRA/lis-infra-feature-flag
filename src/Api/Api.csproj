@@ -6,7 +6,6 @@
     <ProjectReference Include="..\Services\Services.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Endpoints\Management\" />
-    <Folder Include="Services\" />
+    <Folder Include="Utils\Http\" />
   </ItemGroup>
 </Project>
