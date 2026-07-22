@@ -61,10 +61,11 @@ public class PublicEndpointsTests
     {
         var service = Substitute.For<IFeatureFlagService>();
         service.GetFeatureFlagStatus(Arg.Any<GetFeatureFlagStatus>(), Arg.Any<CancellationToken>())
-            .Returns(new FeatureFlagStatus { FlagEnabled = true });
+            .Returns(new FeatureFlagStatusResult() { FlagName = "Test", FlagEnabled = true, Success = true });
         var method = typeof(PublicEndpoints).GetMethod("EvaluateFeatureFlagStatusByGroupAndFlag",
             BindingFlags.NonPublic | BindingFlags.Static);
-        var request = new GetFeatureFlagStatus { GroupName = "Payments", FlagName = "NewUi", EnvironmentName = "Prod", };
+        var request =
+            new GetFeatureFlagStatus { GroupName = "Payments", FlagName = "NewUi", EnvironmentName = "Prod", };
 
         method.ShouldNotBeNull();
 
@@ -72,6 +73,6 @@ public class PublicEndpointsTests
         var result = await task;
         var okResult = result.ShouldBeOfType<Ok<FeatureFlagStatus>>();
 
-        okResult.Value.ShouldBe(new FeatureFlagStatus { FlagEnabled = true });
+        okResult.Value.ShouldBe(new FeatureFlagStatusResult { FlagName = "Test", FlagEnabled = true, Success = true });
     }
 }

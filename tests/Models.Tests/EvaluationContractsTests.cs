@@ -28,11 +28,15 @@ public class EvaluationContractsTests
     [Fact]
     public void EvaluationResult_ShouldStoreProvidedValues()
     {
-        var result = new FeatureFlagStatus
+        var result = new FeatureFlagStatusResult
         {
+            FlagName = "Test",
             FlagEnabled = true,
+            Success = false,
         };
 
+        result.FlagName.ShouldBe("Test");
         result.FlagEnabled.ShouldBeTrue();
+        result.Success.ShouldBeFalse();
     }
 }

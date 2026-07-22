@@ -8,5 +8,5 @@ using Lis.Infra.FeatureFlag.Models.Responses.Common;
 
 public class FeatureFlagStatusResult : FeatureFlagStatus
 {
-    public bool Success { get; set; }
+    public required bool Success { get; init; }
 }

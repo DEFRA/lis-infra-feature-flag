@@ -6,6 +6,7 @@ namespace Lis.Infra.FeatureFlag.Services.Tests;
 
 using System.Linq.Expressions;
 using Defra.Livestock.Sdk.Api.Strategies.Operations;
+using FluentValidation;
 using Lis.Infra.FeatureFlag.Database.Domain;
 using Lis.Infra.FeatureFlag.Database.Entities;
 using Lis.Infra.FeatureFlag.Models.Requests;
@@ -23,7 +24,15 @@ public class FeatureFlagServiceTests
     {
         repository = Substitute.For<IFeatureFlagStatusRepository>();
         logger = Substitute.For<ILogger<FeatureFlagService>>();
-        sut = new FeatureFlagService(repository, new RepoStrategyFactory<FeatureFlagService>(), logger);
+        var getFeatureFlagGroupStatusValidator = Substitute.For<IValidator<GetFeatureFlagGroupStatus>>();
+        var getFeatureFlagStatusValidator = Substitute.For<IValidator<GetFeatureFlagStatus>>();
+
+        sut = new FeatureFlagService(
+            repository,
+            new RepoStrategyFactory<FeatureFlagService>(),
+            getFeatureFlagGroupStatusValidator,
+            getFeatureFlagStatusValidator,
+            logger);
     }
 
     [Fact]
