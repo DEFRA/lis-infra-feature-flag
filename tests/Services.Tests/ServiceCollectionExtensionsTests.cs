@@ -6,6 +6,7 @@ namespace Lis.Infra.FeatureFlag.Services.Tests;
 
 using Defra.Livestock.Sdk.Api.Strategies.Abstractions.Operations;
 using Defra.Livestock.Sdk.Api.Strategies.Operations;
+using Lis.Infra.FeatureFlag.Models;
 using Lis.Infra.FeatureFlag.Repositories.FeatureFlagStatuses;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,6 +27,7 @@ public class ServiceCollectionExtensionsTests
 
         services.AddSingleton(repository);
         services.AddSingleton(logger);
+        services.AddValidators();
 
         var returnedServices = services.AddServices(configuration);
         using var provider = services.BuildServiceProvider();
