@@ -9,13 +9,15 @@ using Lis.Infra.FeatureFlag.Database.Extensions;
 
 public class FeatureGroupAndFlagStatuses
 {
-    public FeatureFlagStatuses? EnvironmentAgnosticGroupStatus { get; set; }
+    public FeatureFlagStatuses? EnvironmentAgnosticGroupStatus { get; init; }
 
-    public FeatureFlagStatuses? EnvironmentSpecificGroupStatus { get; set; }
+    public FeatureFlagStatuses? EnvironmentSpecificGroupStatus { get; init; }
 
-    public List<FeatureFlagStatuses> FeatureFlagStatuses { get; set; } = [];
+    public List<FeatureFlagStatuses> FeatureFlagStatuses { get; init; } = [];
 
     public bool IsGroupEnabled => (EnvironmentSpecificGroupStatus ?? EnvironmentAgnosticGroupStatus).IsFlagActive();
+
+    public bool HasGroupStatus => EnvironmentSpecificGroupStatus != null || EnvironmentAgnosticGroupStatus != null;
 
     public List<string?> GetUniqueFeatureFlagNames() =>
         FeatureFlagStatuses.Select(status => status.Flag?.Name).Distinct().ToList();

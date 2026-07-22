@@ -8,6 +8,7 @@ using System.Net.Mime;
 using Lis.Infra.FeatureFlag.Api.Filters;
 using Lis.Infra.FeatureFlag.Models.Requests;
 using Lis.Infra.FeatureFlag.Models.Responses;
+using Lis.Infra.FeatureFlag.Models.Responses.Common;
 using Lis.Infra.FeatureFlag.Services;
 using Microsoft.AspNetCore.Mvc;
 

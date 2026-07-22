@@ -12,6 +12,7 @@ using Lis.Infra.FeatureFlag.Database.Entities;
 using Lis.Infra.FeatureFlag.Database.Extensions;
 using Lis.Infra.FeatureFlag.Models.Requests;
 using Lis.Infra.FeatureFlag.Models.Responses;
+using Lis.Infra.FeatureFlag.Models.Responses.Common;
 using Lis.Infra.FeatureFlag.Repositories.FeatureFlagStatuses;
 using Lis.Infra.FeatureFlag.Services.Filters;
 using Lis.Infra.FeatureFlag.Services.Models;
@@ -65,6 +66,7 @@ public class FeatureFlagService : IFeatureFlagService
                     GroupName = request.GroupName,
                     GroupEnabled = featureGroupAndFlagStatuses.IsGroupEnabled,
                     Features = GetEffectiveFeatureFlagStatuses(featureGroupAndFlagStatuses),
+                    Success = featureGroupAndFlagStatuses.HasGroupStatus,
                 };
             });
     }
@@ -90,10 +92,14 @@ public class FeatureFlagService : IFeatureFlagService
                 var featureGroupAndFlagStatuses =
                     GetFeatureGroupAndFlagStatuses(statuses, request.EnvironmentName, request.FlagName);
 
-                return GetEffectiveFeatureFlagStatuses(featureGroupAndFlagStatuses)
-                    .SingleOrDefault() ?? new FeatureFlagStatusResult()
+                var effectiveFeatureFlagStatuses =
+                    GetEffectiveFeatureFlagStatuses(featureGroupAndFlagStatuses).SingleOrDefault();
+
+                return new FeatureFlagStatusResult()
                 {
-                    FlagName = request.FlagName, FlagEnabled = false,
+                    FlagName = request.FlagName,
+                    FlagEnabled = effectiveFeatureFlagStatuses?.FlagEnabled ?? false,
+                    Success = effectiveFeatureFlagStatuses != null,
                 };
             });
     }
@@ -115,7 +121,7 @@ public class FeatureFlagService : IFeatureFlagService
         };
     }
 
-    private static List<FeatureFlagStatusResult> GetEffectiveFeatureFlagStatuses(FeatureGroupAndFlagStatuses statuses)
+    private static List<FeatureFlagStatus> GetEffectiveFeatureFlagStatuses(FeatureGroupAndFlagStatuses statuses)
     {
         return statuses.IsGroupEnabled
             ? statuses.GetUniqueFeatureFlagNames().Select(flagName =>
@@ -137,7 +143,7 @@ public class FeatureFlagService : IFeatureFlagService
                             featureFlagStatus.Environment == null)
                         : null))
                 .Where(featureFlagStatus => featureFlagStatus != null)
-                .Select(featureFlagStatus => new FeatureFlagStatusResult()
+                .Select(featureFlagStatus => new FeatureFlagStatus()
                 {
                     FlagName = featureFlagStatus!.Flag!.Name, FlagEnabled = featureFlagStatus.IsFlagActive(),
                 })

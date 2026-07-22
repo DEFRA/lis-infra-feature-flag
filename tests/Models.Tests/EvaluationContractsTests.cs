@@ -6,6 +6,7 @@ namespace Lis.Infra.FeatureFlag.Models.Tests;
 
 using Lis.Infra.FeatureFlag.Models.Requests;
 using Lis.Infra.FeatureFlag.Models.Responses;
+using Lis.Infra.FeatureFlag.Models.Responses.Common;
 
 public class EvaluationContractsTests
 {
@@ -27,7 +28,7 @@ public class EvaluationContractsTests
     [Fact]
     public void EvaluationResult_ShouldStoreProvidedValues()
     {
-        var result = new FeatureFlagStatusResult
+        var result = new FeatureFlagStatus
         {
             FlagEnabled = true,
         };

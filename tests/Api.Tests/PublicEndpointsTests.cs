@@ -8,6 +8,7 @@ using System.Reflection;
 using Lis.Infra.FeatureFlag.Api.Endpoints.Public;
 using Lis.Infra.FeatureFlag.Models.Requests;
 using Lis.Infra.FeatureFlag.Models.Responses;
+using Lis.Infra.FeatureFlag.Models.Responses.Common;
 using Lis.Infra.FeatureFlag.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -60,7 +61,7 @@ public class PublicEndpointsTests
     {
         var service = Substitute.For<IFeatureFlagService>();
         service.GetFeatureFlagStatus(Arg.Any<GetFeatureFlagStatus>(), Arg.Any<CancellationToken>())
-            .Returns(new FeatureFlagStatusResult { FlagEnabled = true });
+            .Returns(new FeatureFlagStatus { FlagEnabled = true });
         var method = typeof(PublicEndpoints).GetMethod("EvaluateFeatureFlagStatusByGroupAndFlag",
             BindingFlags.NonPublic | BindingFlags.Static);
         var request = new GetFeatureFlagStatus { GroupName = "Payments", FlagName = "NewUi", EnvironmentName = "Prod", };
@@ -69,8 +70,8 @@ public class PublicEndpointsTests
 
         var task = (Task<IResult>)method!.Invoke(null, [request, service, TestContext.Current.CancellationToken])!;
         var result = await task;
-        var okResult = result.ShouldBeOfType<Ok<FeatureFlagStatusResult>>();
+        var okResult = result.ShouldBeOfType<Ok<FeatureFlagStatus>>();
 
-        okResult.Value.ShouldBe(new FeatureFlagStatusResult { FlagEnabled = true });
+        okResult.Value.ShouldBe(new FeatureFlagStatus { FlagEnabled = true });
     }
 }

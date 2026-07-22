@@ -1,12 +1,12 @@
-// <copyright file="FeatureFlagStatusResult.cs" company="Defra">
+﻿// <copyright file="FeatureFlagStatusResult.cs" company="Defra">
 // Copyright (c) Defra. All rights reserved.
 // </copyright>
 
 namespace Lis.Infra.FeatureFlag.Models.Responses;
 
-public class FeatureFlagStatusResult()
-{
-    public required string FlagName { get; set; }
+using Lis.Infra.FeatureFlag.Models.Responses.Common;
 
-    public bool FlagEnabled { get; set; }
+public class FeatureFlagStatusResult : FeatureFlagStatus
+{
+    public bool Success { get; set; }
 }
