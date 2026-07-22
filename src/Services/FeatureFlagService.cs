@@ -48,7 +48,6 @@ public class FeatureFlagService : IFeatureFlagService
     {
         var featureFlagStatusFilter =
             FilterLibrary.Data.ProductSpecificFilter(request.ProductName)
-                .AndAlso(FilterLibrary.Data.EnvironmentAgnosticAndSpecificFilter(request.EnvironmentName))
                 .AndAlso(FilterLibrary.Data.GroupWithProductSpecificFilter(request.GroupName, request.ProductName));
 
         return await strategyFactory.BuildGetListStrategy<FeatureFlagStatuses>()
@@ -77,7 +76,6 @@ public class FeatureFlagService : IFeatureFlagService
     {
         var featureFlagStatusFilter =
             FilterLibrary.Data.ProductSpecificFilter(request.ProductName)
-                .AndAlso(FilterLibrary.Data.EnvironmentAgnosticAndSpecificFilter(request.EnvironmentName))
                 .AndAlso(FilterLibrary.Data.GroupWithProductSpecificFilter(request.GroupName, request.ProductName))
                 .AndAlso(FilterLibrary.Data.FlagAgnosticAndSpecificFilter(request.FlagName));
 
@@ -99,7 +97,7 @@ public class FeatureFlagService : IFeatureFlagService
                 {
                     FlagName = request.FlagName,
                     FlagEnabled = effectiveFeatureFlagStatuses?.FlagEnabled ?? false,
-                    Success = effectiveFeatureFlagStatuses != null,
+                    Success = featureGroupAndFlagStatuses.GetHasFlagWithName(request.FlagName),
                 };
             });
     }
@@ -123,31 +121,44 @@ public class FeatureFlagService : IFeatureFlagService
 
     private static List<FeatureFlagStatus> GetEffectiveFeatureFlagStatuses(FeatureGroupAndFlagStatuses statuses)
     {
-        return statuses.IsGroupEnabled
-            ? statuses.GetUniqueFeatureFlagNames().Select(flagName =>
-                    (statuses.EnvironmentSpecificGroupStatus.IsFlagActive()
-                        ? statuses.FeatureFlagStatuses.SingleOrDefault(featureFlagStatus =>
-                            flagName != null &&
-                            featureFlagStatus.Flag != null &&
-                            featureFlagStatus.EnvironmentId != null &&
-                            featureFlagStatus.Flag.Name == flagName &&
-                            statuses.EnvironmentSpecificGroupStatus != null &&
-                            featureFlagStatus.EnvironmentId ==
-                            statuses.EnvironmentSpecificGroupStatus.EnvironmentId)
-                        : null) ??
-                    (statuses.EnvironmentAgnosticGroupStatus.IsFlagActive()
-                        ? statuses.FeatureFlagStatuses.SingleOrDefault(featureFlagStatus =>
-                            flagName != null &&
-                            featureFlagStatus.Flag != null &&
-                            featureFlagStatus.Flag.Name == flagName &&
-                            featureFlagStatus.Environment == null)
-                        : null))
-                .Where(featureFlagStatus => featureFlagStatus != null)
-                .Select(featureFlagStatus => new FeatureFlagStatus()
-                {
-                    FlagName = featureFlagStatus!.Flag!.Name, FlagEnabled = featureFlagStatus.IsFlagActive(),
-                })
-                .ToList()
-            : [];
+        if (!statuses.IsGroupEnabled)
+        {
+            return [];
+        }
+
+        var statusesForSpecificAndAgnosticEnvironment = statuses.GetUniqueFeatureFlagNames().Select(flagName =>
+                (statuses.EnvironmentSpecificGroupStatus.IsFlagActive()
+                    ? statuses.FeatureFlagStatuses.SingleOrDefault(featureFlagStatus =>
+                        flagName != null &&
+                        featureFlagStatus.Flag != null &&
+                        featureFlagStatus.EnvironmentId != null &&
+                        featureFlagStatus.Flag.Name == flagName &&
+                        statuses.EnvironmentSpecificGroupStatus != null &&
+                        featureFlagStatus.EnvironmentId ==
+                        statuses.EnvironmentSpecificGroupStatus.EnvironmentId)
+                    : null) ??
+                (statuses.EnvironmentAgnosticGroupStatus.IsFlagActive()
+                    ? statuses.FeatureFlagStatuses.SingleOrDefault(featureFlagStatus =>
+                        flagName != null &&
+                        featureFlagStatus.Flag != null &&
+                        featureFlagStatus.Flag.Name == flagName &&
+                        featureFlagStatus.Environment == null)
+                    : null))
+            .Where(featureFlagStatus => featureFlagStatus != null)
+            .Select(featureFlagStatus => new FeatureFlagStatus()
+            {
+                FlagName = featureFlagStatus!.Flag!.Name, FlagEnabled = featureFlagStatus.IsFlagActive(),
+            })
+            .ToList();
+
+        var statusesForOtherEnvironments =
+            statuses.GetUniqueFeatureFlagNames().Where(flagName =>
+                    flagName != null &&
+                    statusesForSpecificAndAgnosticEnvironment.All(status => status.FlagName != flagName) &&
+                    statuses.GetHasFlagWithName(flagName))
+                .Select(flagName => new FeatureFlagStatus() { FlagName = flagName!, FlagEnabled = false });
+
+        return statusesForSpecificAndAgnosticEnvironment.Concat(statusesForOtherEnvironments)
+            .OrderBy(status => status.FlagName).ToList();
     }
 }

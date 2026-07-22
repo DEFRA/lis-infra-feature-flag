@@ -20,12 +20,6 @@ public static class FilterLibrary
                 EF.Functions.ILike(featureFlagStatus.Product.Name, product);
 
         public static Expression<Func<FeatureFlagStatuses, bool>>
-            EnvironmentAgnosticAndSpecificFilter(string? environment) =>
-            featureFlagStatus =>
-                featureFlagStatus.Environment == null ||
-                (environment != null && EF.Functions.ILike(featureFlagStatus.Environment.Name, environment));
-
-        public static Expression<Func<FeatureFlagStatuses, bool>>
             GroupWithProductSpecificFilter(string? group, string? product) =>
             featureFlagStatus =>
                 group != null && EF.Functions.ILike(featureFlagStatus.Group.Name, group) && product != null &&

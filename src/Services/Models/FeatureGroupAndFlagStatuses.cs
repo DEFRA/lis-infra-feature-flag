@@ -21,4 +21,7 @@ public class FeatureGroupAndFlagStatuses
 
     public List<string?> GetUniqueFeatureFlagNames() =>
         FeatureFlagStatuses.Select(status => status.Flag?.Name).Distinct().ToList();
+
+    public bool GetHasFlagWithName(string flagName) =>
+        FeatureFlagStatuses.Any(status => status.Flag?.Name == flagName);
 }
