@@ -7,7 +7,6 @@ namespace Lis.Infra.FeatureFlag.Services.Filters;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using Lis.Infra.FeatureFlag.Database.Entities;
-using Microsoft.EntityFrameworkCore;
 
 [ExcludeFromCodeCoverage]
 public static class FilterLibrary
@@ -17,19 +16,18 @@ public static class FilterLibrary
         public static Expression<Func<FeatureFlagStatuses, bool>> ProductSpecificFilter(string? product) =>
             featureFlagStatus =>
                 product != null && featureFlagStatus.Product != null &&
-                EF.Functions.ILike(featureFlagStatus.Product.Name, product);
+                featureFlagStatus.Product.Name == product;
 
         public static Expression<Func<FeatureFlagStatuses, bool>>
             GroupWithProductSpecificFilter(string? group, string? product) =>
             featureFlagStatus =>
-                group != null && EF.Functions.ILike(featureFlagStatus.Group.Name, group) && product != null &&
+                group != null && featureFlagStatus.Group.Name == group && product != null &&
                 featureFlagStatus.Product != null && featureFlagStatus.Product.Name == product;
 
         public static Expression<Func<FeatureFlagStatuses, bool>> FlagAgnosticAndSpecificFilter(string? flag) =>
             featureFlagStatus =>
                 featureFlagStatus.Flag == null ||
-                (flag != null && featureFlagStatus.Flag != null &&
-                 EF.Functions.ILike(featureFlagStatus.Flag.Name, flag));
+                (flag != null && featureFlagStatus.Flag != null && featureFlagStatus.Flag.Name == flag);
     }
 
     public static class GroupStatusSelect
