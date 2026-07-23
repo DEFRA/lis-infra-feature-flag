@@ -26,6 +26,10 @@ public class FeatureGroupsConfiguration : IEntityTypeConfiguration<FeatureGroups
             .HasColumnName(nameof(FeatureGroups.Description).ToSnakeCase())
             .HasColumnType(ColumnTypes.Text);
 
+        builder.Property(flag => flag.ProductId)
+            .HasColumnName(nameof(FeatureGroups.ProductId).ToSnakeCase())
+            .HasColumnType(ColumnTypes.UniqueIdentifier);
+
         builder.HasOne(group => group.Product)
             .WithMany(prd => prd.FeatureGroups)
             .HasForeignKey(group => group.ProductId)

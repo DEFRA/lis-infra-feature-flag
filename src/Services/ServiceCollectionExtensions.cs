@@ -4,6 +4,7 @@
 
 namespace Lis.Infra.FeatureFlag.Services;
 
+using Defra.Livestock.Sdk.Api.Strategies;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,7 +14,9 @@ public static class ServiceCollectionExtensions
     {
         public IServiceCollection AddServices(IConfigurationRoot config)
         {
-            services.AddTransient<IFeatureService, FeatureService>();
+            services.AddStrategyFramework();
+            services.AddRepoStrategyFactory<FeatureFlagService>();
+            services.AddTransient<IFeatureFlagService, FeatureFlagService>();
 
             return services;
         }

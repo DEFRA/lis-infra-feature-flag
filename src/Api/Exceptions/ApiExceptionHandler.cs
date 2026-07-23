@@ -4,6 +4,7 @@
 
 namespace Lis.Infra.FeatureFlag.Api.Exceptions;
 
+using Defra.Livestock.Sdk.Api.Strategies.Abstractions.Exceptions;
 using Lis.Infra.FeatureFlag.Api.Middleware.Headers;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
@@ -18,15 +19,17 @@ public sealed partial class ApiExceptionHandler(ILogger<ApiExceptionHandler> log
     {
         var (statusCode, title, type) = exception switch
         {
-            NotFoundException => (StatusCodes.Status404NotFound, "Not Found", "https://httpstatuses.com/404"),
-            ConflictException => (StatusCodes.Status409Conflict, "Conflict", "https://httpstatuses.com/409"),
+            EntityNotFoundException => (StatusCodes.Status404NotFound, "Not Found", "https://httpstatuses.com/404"),
+            ExistenceRuleException => (StatusCodes.Status404NotFound, "Not Found", "https://httpstatuses.com/404"),
+            ConflictRuleException => (StatusCodes.Status409Conflict, "Conflict", "https://httpstatuses.com/409"),
             BusinessRuleException => (StatusCodes.Status400BadRequest, "Bad Request", "https://httpstatuses.com/400"),
+            RequestValidationException => (StatusCodes.Status400BadRequest, "Bad Request", "https://httpstatuses.com/400"),
             ArgumentException => (StatusCodes.Status400BadRequest, "Bad Request", "https://httpstatuses.com/400"),
-            UnauthorizedAccessException => (StatusCodes.Status403Forbidden, "Forbidden", "https://httpstatuses.com/403"),
+            UnauthorizedAccessException => (StatusCodes.Status403Forbidden, "Forbidden",
+                "https://httpstatuses.com/403"),
             _ => (StatusCodes.Status500InternalServerError, "Internal Server Error", "https://httpstatuses.com/500"),
         };
 
-        // Put useful values into the Serilog LogContext (works with Enrich.FromLogContext()).
         var correlationId = httpContext.Request.Headers[RequestHeaderNames.CorrelationId].ToString();
         using (LogContext.PushProperty("CorrelationId", correlationId))
         using (LogContext.PushProperty("TraceId", httpContext.TraceIdentifier))
@@ -35,11 +38,19 @@ public sealed partial class ApiExceptionHandler(ILogger<ApiExceptionHandler> log
         {
             if (statusCode >= 500)
             {
-                LogUnhandledExceptionWhileProcessingRequestMethodPath(httpContext.Request.Method, httpContext.Request.Path, exception);
+                LogUnhandledExceptionWhileProcessingRequestMethodPath(
+                    httpContext.Request.Method,
+                    httpContext.Request.Path,
+                    exception);
             }
             else
             {
-                LogRequestFailedWithStatusCodeTitleForMethodPath(statusCode, title, httpContext.Request.Method, httpContext.Request.Path, exception);
+                LogRequestFailedWithStatusCodeTitleForMethodPath(
+                    statusCode,
+                    title,
+                    httpContext.Request.Method,
+                    httpContext.Request.Path,
+                    exception);
             }
         }
 
@@ -50,15 +61,12 @@ public sealed partial class ApiExceptionHandler(ILogger<ApiExceptionHandler> log
             Type = type,
             Detail = exception.Message,
             Instance = httpContext.Request.Path,
-            Extensions =
-            {
-                ["traceId"] = httpContext.TraceIdentifier,
-            },
+            Extensions = { ["traceId"] = httpContext.TraceIdentifier, },
         };
 
         httpContext.Response.StatusCode = statusCode;
         await httpContext.Response.WriteAsJsonAsync(problem, cancellationToken);
 
-        return true; // exception handled
+        return true;
     }
 }

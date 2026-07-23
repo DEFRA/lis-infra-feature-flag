@@ -2,17 +2,25 @@
 // Copyright (c) Defra. All rights reserved.
 // </copyright>
 
-namespace Defra.Identity.Api.Endpoints.Profiles;
+namespace Lis.Infra.FeatureFlag.Api.Endpoints.Public;
 
 public static class OpenApiMetadata
 {
-    // GetUserProfileById endpoint
-    public static class GetUserProfileByIdRoute
+    public static class GetFeatureFlagGroupStatusRoute
     {
-        public const string Name = "GetUserProfileById";
-        public const string Summary = "Get a user profile by the associated user account id";
+        public const string Name = "GetFeatureFlagGroupStatus";
+        public const string Summary = "Get feature flag group status";
 
         public const string Description =
-            "Retrieves a user profile containing user details, cph assignments and cph delegations given the id of the associated user account";
+            "Retrieves the feature flag statuses for a given group";
+    }
+
+    public static class GetFeatureFlagStatusRoute
+    {
+        public const string Name = "GetFeatureFlagStatus";
+        public const string Summary = "Get feature flag status";
+
+        public const string Description =
+            "Retrieves the feature flag status for a given flag within a group";
     }
 }

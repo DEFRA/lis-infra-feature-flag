@@ -2,11 +2,10 @@
 // Copyright (c) Defra. All rights reserved.
 // </copyright>
 
-namespace Lis.Infra.FeatureFlag.Database.PostgreSql.Tests;
+namespace Lis.Infra.FeatureFlag.Database.PostgreSQL.Tests;
 
 using Lis.Infra.FeatureFlag.Database.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 

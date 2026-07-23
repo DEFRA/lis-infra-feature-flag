@@ -6,6 +6,13 @@ namespace Lis.Infra.FeatureFlag.Database.Domain;
 
 public enum ActivationType
 {
+    /// <summary>
+    /// Feature flag is activated and deactivated manually
+    /// </summary>
     Manual,
-    Scheduled
+
+    /// <summary>
+    /// // Feature flag is activated and deactivated by schedule
+    /// </summary>
+    Scheduled,
 }

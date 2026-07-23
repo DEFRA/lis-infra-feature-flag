@@ -4,32 +4,32 @@
 
 namespace Lis.Infra.FeatureFlag.Database.Extensions;
 
-using System.Diagnostics;
 using Lis.Infra.FeatureFlag.Database.Domain;
 
 public static class FeatureFlagStatusesExtensions
 {
-    extension(FeatureFlagStatuses? flag)
+    extension(FeatureFlagStatuses? featureFlagStatus)
     {
         public bool IsFlagActive()
         {
-            var now = DateTime.UtcNow;
+            var currentDateTime = DateTime.UtcNow;
 
-            if (flag is null)
+            if (featureFlagStatus is null)
             {
                 return false;
             }
 
-            switch (flag.ActivationType)
+            switch (featureFlagStatus.ActivationType)
             {
                 case ActivationType.Manual:
-                    return flag.ManualEnabled ?? false;
+                    return featureFlagStatus.ManualEnabled ?? false;
 
                 case ActivationType.Scheduled:
                 {
-                    var expireAt = flag.ExpireAt ?? DateTime.MaxValue.ToUniversalTime();
-                    Debug.Assert(flag.ActivateAfter != null, "flag.ActivateAfter != null");
-                    return now >= flag.ActivateAfter.Value && now < expireAt;
+                    var expireAt = featureFlagStatus.ExpireAt ?? DateTime.MaxValue.ToUniversalTime();
+                    var activateAfter = featureFlagStatus.ActivateAfter ?? DateTime.MinValue.ToUniversalTime();
+
+                    return currentDateTime >= activateAfter && currentDateTime < expireAt;
                 }
 
                 default:
