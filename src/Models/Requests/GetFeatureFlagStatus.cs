@@ -8,7 +8,7 @@ using Lis.Infra.FeatureFlag.Models.Requests.Base;
 
 public class GetFeatureFlagStatus : OperationByProductAndEnvironment
 {
-    public required string GroupName { get; init; }
+    public required string GroupName { get; set; }
 
-    public required string FlagName { get; init; }
+    public required string FlagName { get; set; }
 }
