@@ -8,6 +8,7 @@ using System.Reflection;
 using Lis.Infra.FeatureFlag.Api.Endpoints.Public;
 using Lis.Infra.FeatureFlag.Models.Requests;
 using Lis.Infra.FeatureFlag.Models.Responses;
+using Lis.Infra.FeatureFlag.Models.Responses.Common;
 using Lis.Infra.FeatureFlag.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -62,18 +63,18 @@ public class PublicEndpointsTests
     }
 
     [Fact]
-    public async Task EvaluatedFeatureFlag_ShouldReturnOkResultFromService()
+    public async Task GetFeatureFlagStatus_ShouldReturnOkResultFromService()
     {
         var service = Substitute.For<IFeatureFlagService>();
         service.GetFeatureFlagStatus(Arg.Any<GetFeatureFlagStatus>(), Arg.Any<CancellationToken>())
-            .Returns(new FeatureFlagStatusResult() { FlagName = "NewUi", FlagEnabled = true, Success = true });
+            .Returns(new FeatureFlagStatusResult() { FlagName = "new-ui", FlagEnabled = true, Success = true });
 
         var method = typeof(PublicEndpoints).GetMethod(
             "GetFeatureFlagStatusRoute",
             BindingFlags.NonPublic | BindingFlags.Static);
 
         var request =
-            new GetFeatureFlagStatus { GroupName = "Payments", FlagName = "NewUi", EnvironmentName = "Prod", };
+            new GetFeatureFlagStatus { GroupName = "payments", FlagName = "new-ui", EnvironmentName = "prod", };
 
         method.ShouldNotBeNull();
 
@@ -82,8 +83,51 @@ public class PublicEndpointsTests
         var okResult = result.ShouldBeOfType<Ok<FeatureFlagStatusResult>>();
 
         okResult.Value.ShouldNotBeNull();
-        okResult.Value.FlagName.ShouldBe("NewUi");
+        okResult.Value.FlagName.ShouldBe("new-ui");
         okResult.Value.FlagEnabled.ShouldBeTrue();
         okResult.Value.Success.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task GetFeatureFlagGroupStatus_ShouldReturnOkResultFromService()
+    {
+        var service = Substitute.For<IFeatureFlagService>();
+        service.GetFeatureFlagGroupStatus(Arg.Any<GetFeatureFlagGroupStatus>(), Arg.Any<CancellationToken>())
+            .Returns(new FeatureFlagGroupStatusResult()
+            {
+                GroupName = "payments",
+                GroupEnabled = true,
+                Success = true,
+                Features =
+                [
+                    new FeatureFlagStatus() { FlagName = "new-ui-1", FlagEnabled = true },
+                    new FeatureFlagStatus() { FlagName = "new-ui-2", FlagEnabled = false }
+                ],
+            });
+
+        var method = typeof(PublicEndpoints).GetMethod(
+            "GetFeatureFlagGroupStatusRoute",
+            BindingFlags.NonPublic | BindingFlags.Static);
+
+        var request =
+            new GetFeatureFlagGroupStatus() { GroupName = "payments", EnvironmentName = "prod", ProductName = "LIS" };
+
+        method.ShouldNotBeNull();
+
+        var task = (Task<IResult>)method.Invoke(null, [request, service, TestContext.Current.CancellationToken])!;
+        var result = await task;
+        var okResult = result.ShouldBeOfType<Ok<FeatureFlagGroupStatusResult>>();
+
+        okResult.Value.ShouldNotBeNull();
+        okResult.Value.GroupName.ShouldBe("payments");
+        okResult.Value.GroupEnabled.ShouldBeTrue();
+        okResult.Value.Success.ShouldBeTrue();
+
+        okResult.Value.Features.ShouldNotBeNull();
+        okResult.Value.Features.Count.ShouldBe(2);
+        okResult.Value.Features[0].FlagName.ShouldBe("new-ui-1");
+        okResult.Value.Features[0].FlagEnabled.ShouldBeTrue();
+        okResult.Value.Features[1].FlagName.ShouldBe("new-ui-2");
+        okResult.Value.Features[1].FlagEnabled.ShouldBeFalse();
     }
 }

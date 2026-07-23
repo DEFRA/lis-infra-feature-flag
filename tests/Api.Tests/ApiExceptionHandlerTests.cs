@@ -34,6 +34,10 @@ public class ApiExceptionHandlerTests
                 "https://httpstatuses.com/400"
             },
             {
+                new RequestValidationException("business"), StatusCodes.Status400BadRequest, "Bad Request",
+                "https://httpstatuses.com/400"
+            },
+            {
                 new ArgumentException("argument"), StatusCodes.Status400BadRequest, "Bad Request",
                 "https://httpstatuses.com/400"
             },

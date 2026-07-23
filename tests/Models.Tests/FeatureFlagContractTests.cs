@@ -1,4 +1,4 @@
-// <copyright file="EvaluationContractsTests.cs" company="Defra">
+// <copyright file="FeatureFlagContractTests.cs" company="Defra">
 // Copyright (c) Defra. All rights reserved.
 // </copyright>
 
@@ -6,12 +6,11 @@ namespace Lis.Infra.FeatureFlag.Models.Tests;
 
 using Lis.Infra.FeatureFlag.Models.Requests;
 using Lis.Infra.FeatureFlag.Models.Responses;
-using Lis.Infra.FeatureFlag.Models.Responses.Common;
 
-public class EvaluationContractsTests
+public class FeatureFlagContractTests
 {
     [Fact]
-    public void EvaluationRequest_ShouldStoreProvidedValues()
+    public void GetFeatureFlagStatus_ShouldStoreProvidedValues()
     {
         var request = new GetFeatureFlagStatus
         {
@@ -26,7 +25,7 @@ public class EvaluationContractsTests
     }
 
     [Fact]
-    public void EvaluationResult_ShouldStoreProvidedValues()
+    public void FeatureFlagStatusResult_ShouldStoreProvidedValues()
     {
         var result = new FeatureFlagStatusResult
         {
