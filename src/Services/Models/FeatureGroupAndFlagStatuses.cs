@@ -4,9 +4,11 @@
 
 namespace Lis.Infra.FeatureFlag.Services.Models;
 
+using System.Diagnostics.CodeAnalysis;
 using Lis.Infra.FeatureFlag.Database.Entities;
 using Lis.Infra.FeatureFlag.Database.Extensions;
 
+[ExcludeFromCodeCoverage]
 public class FeatureGroupAndFlagStatuses
 {
     public FeatureFlagStatuses? EnvironmentAgnosticGroupStatus { get; init; }
