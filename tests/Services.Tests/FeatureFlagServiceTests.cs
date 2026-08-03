@@ -10,7 +10,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using Lis.Infra.FeatureFlag.Database.Domain;
 using Lis.Infra.FeatureFlag.Database.Entities;
-using Lis.Infra.FeatureFlag.Models.Requests;
+using Lis.Infra.FeatureFlag.Models.Requests.FeatureFlags;
 using Lis.Infra.FeatureFlag.Repositories.FeatureFlagStatuses;
 using Microsoft.Extensions.Logging;
 using NSubstitute;

@@ -17,7 +17,7 @@ using Serilog.Formatting.Compact;
 [ExcludeFromCodeCoverage]
 public static class AuditLogger
 {
-    public const string AuditPropertyName = "IsAudit";
+    private const string AuditPropertyName = "IsAudit";
 
     public static Logger CreateAuditLogger()
     {
@@ -27,15 +27,6 @@ public static class AuditLogger
             .Enrich.With<EnrichAuditLog>()
             .WriteTo.Console(new CompactJsonFormatter())
             .CreateLogger();
-    }
-
-    [ExcludeFromCodeCoverage]
-    class EnrichAuditLog : ILogEventEnricher
-    {
-        public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
-        {
-            logEvent.AddOrUpdateProperty(propertyFactory.CreateProperty("log.level", "audit"));
-        }
     }
 
     public static class Filters
@@ -56,6 +47,15 @@ public static class AuditLogger
             {
                 return !logEvent.Properties.ContainsKey(AuditPropertyName);
             }
+        }
+    }
+
+    [ExcludeFromCodeCoverage]
+    private sealed class EnrichAuditLog : ILogEventEnricher
+    {
+        public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
+        {
+            logEvent.AddOrUpdateProperty(propertyFactory.CreateProperty("log.level", "audit"));
         }
     }
 }

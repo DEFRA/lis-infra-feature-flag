@@ -13,21 +13,23 @@ public static class FilterLibrary
 {
     public static class Data
     {
-        public static Expression<Func<FeatureFlagStatuses, bool>> ProductSpecificFilter(string? product) =>
+        public static Expression<Func<FeatureFlagStatuses, bool>> ProductSpecificFilter(string? productName) =>
             featureFlagStatus =>
-                product != null && featureFlagStatus.Product != null &&
-                featureFlagStatus.Product.Name == product;
+                productName != null && featureFlagStatus.Product != null &&
+                featureFlagStatus.Product.Name == productName;
 
         public static Expression<Func<FeatureFlagStatuses, bool>>
-            GroupWithProductSpecificFilter(string? group, string? product) =>
+            GroupWithProductSpecificFilter(string? groupName, string? productName) =>
             featureFlagStatus =>
-                group != null && featureFlagStatus.Group.Name == group && product != null &&
-                featureFlagStatus.Product != null && featureFlagStatus.Product.Name == product;
+                groupName != null && featureFlagStatus.Group.Name == groupName && productName != null &&
+                featureFlagStatus.Product != null && featureFlagStatus.Product.Name == productName &&
+                featureFlagStatus.Group.Product != null &&
+                featureFlagStatus.Group.Product.Id == featureFlagStatus.Product.Id;
 
-        public static Expression<Func<FeatureFlagStatuses, bool>> FlagAgnosticAndSpecificFilter(string? flag) =>
+        public static Expression<Func<FeatureFlagStatuses, bool>> FlagAgnosticAndSpecificFilter(string? flagName) =>
             featureFlagStatus =>
                 featureFlagStatus.Flag == null ||
-                (flag != null && featureFlagStatus.Flag != null && featureFlagStatus.Flag.Name == flag);
+                (flagName != null && featureFlagStatus.Flag != null && featureFlagStatus.Flag.Name == flagName);
     }
 
     public static class GroupStatusSelect

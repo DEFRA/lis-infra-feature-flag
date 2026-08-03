@@ -5,7 +5,7 @@
 namespace Lis.Infra.FeatureFlag.Api.Filters;
 
 using Lis.Infra.FeatureFlag.Api.Middleware.Headers;
-using Lis.Infra.FeatureFlag.Models.Requests.Base;
+using Lis.Infra.FeatureFlag.Models.Requests.FeatureFlags.Base;
 using Microsoft.AspNetCore.Http;
 
 public class RequestHeaderMappingFilter<T>

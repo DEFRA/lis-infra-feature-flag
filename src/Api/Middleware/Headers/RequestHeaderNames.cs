@@ -6,7 +6,7 @@ namespace Lis.Infra.FeatureFlag.Api.Middleware.Headers;
 
 public static class RequestHeaderNames
 {
-    public const string CorrelationId = "x-correlation-id";
+    public const string CorrelationId = "x-cdp-request-id";
     public const string ApiKey = "x-api-key";
 
     public const string ProductName = "product-name";

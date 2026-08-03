@@ -5,7 +5,7 @@
 namespace Lis.Infra.FeatureFlag.Models;
 
 using FluentValidation;
-using Lis.Infra.FeatureFlag.Models.Requests;
+using Lis.Infra.FeatureFlag.Models.Requests.FeatureFlags;
 using Microsoft.Extensions.DependencyInjection;
 
 public static class ServiceCollectionExtensions

@@ -10,9 +10,9 @@ using Defra.Livestock.Sdk.Api.Strategies.Operations;
 using FluentValidation;
 using Lis.Infra.FeatureFlag.Database.Entities;
 using Lis.Infra.FeatureFlag.Database.Extensions;
-using Lis.Infra.FeatureFlag.Models.Requests;
-using Lis.Infra.FeatureFlag.Models.Responses;
-using Lis.Infra.FeatureFlag.Models.Responses.Common;
+using Lis.Infra.FeatureFlag.Models.Requests.FeatureFlags;
+using Lis.Infra.FeatureFlag.Models.Responses.FeatureFlags;
+using Lis.Infra.FeatureFlag.Models.Responses.FeatureFlags.Common;
 using Lis.Infra.FeatureFlag.Repositories.FeatureFlagStatuses;
 using Lis.Infra.FeatureFlag.Services.Filters;
 using Lis.Infra.FeatureFlag.Services.Models;
@@ -114,8 +114,8 @@ public class FeatureFlagService : IFeatureFlagService
             EnvironmentSpecificGroupStatus = statuses.SingleOrDefault(
                 FilterLibrary.GroupStatusSelect.EnvironmentSpecificGroupStatus(environmentName)),
             FeatureFlagStatuses = flagName != null
-                ? statuses.Where(FilterLibrary.FlagStatusSelect.SpecificFlag(flagName)).ToList()
-                : statuses.Where(FilterLibrary.FlagStatusSelect.AllFlags()).ToList(),
+                ? [.. statuses.Where(FilterLibrary.FlagStatusSelect.SpecificFlag(flagName))]
+                : [.. statuses.Where(FilterLibrary.FlagStatusSelect.AllFlags())],
         };
     }
 

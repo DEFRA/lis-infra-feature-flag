@@ -4,9 +4,8 @@
 
 namespace Lis.Infra.FeatureFlag.Services;
 
-using Lis.Infra.FeatureFlag.Models.Requests;
-using Lis.Infra.FeatureFlag.Models.Responses;
-using Lis.Infra.FeatureFlag.Models.Responses.Common;
+using Lis.Infra.FeatureFlag.Models.Requests.FeatureFlags;
+using Lis.Infra.FeatureFlag.Models.Responses.FeatureFlags;
 
 public interface IFeatureFlagService
 {

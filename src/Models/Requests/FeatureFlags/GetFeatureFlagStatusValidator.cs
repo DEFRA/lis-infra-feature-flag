@@ -2,7 +2,7 @@
 // Copyright (c) Defra. All rights reserved.
 // </copyright>
 
-namespace Lis.Infra.FeatureFlag.Models.Requests;
+namespace Lis.Infra.FeatureFlag.Models.Requests.FeatureFlags;
 
 using FluentValidation;
 

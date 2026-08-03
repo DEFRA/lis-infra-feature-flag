@@ -4,9 +4,9 @@
 
 namespace Lis.Infra.FeatureFlag.Models.Tests;
 
-using Lis.Infra.FeatureFlag.Models.Requests;
-using Lis.Infra.FeatureFlag.Models.Responses;
-using Lis.Infra.FeatureFlag.Models.Responses.Common;
+using Lis.Infra.FeatureFlag.Models.Requests.FeatureFlags;
+using Lis.Infra.FeatureFlag.Models.Responses.FeatureFlags;
+using Lis.Infra.FeatureFlag.Models.Responses.FeatureFlags.Common;
 
 public class FeatureFlagContractTests
 {

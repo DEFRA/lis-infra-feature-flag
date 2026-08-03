@@ -5,7 +5,4 @@
     <ProjectReference Include="..\Repositories\Repositories.csproj" />
     <ProjectReference Include="..\Services\Services.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Utils\Http\" />
-  </ItemGroup>
 </Project>

@@ -6,8 +6,10 @@ namespace Lis.Infra.FeatureFlag.Api;
 
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
+using Lis.Infra.FeatureFlag.Api.Endpoints.Health;
 using Lis.Infra.FeatureFlag.Api.Endpoints.Public;
 using Lis.Infra.FeatureFlag.Api.Exceptions;
+using Lis.Infra.FeatureFlag.Api.Extensions;
 using Lis.Infra.FeatureFlag.Api.Utils.Logging;
 using Lis.Infra.FeatureFlag.Database;
 using Lis.Infra.FeatureFlag.Models;
@@ -16,12 +18,8 @@ using Lis.Infra.FeatureFlag.Services;
 using Serilog;
 
 [ExcludeFromCodeCoverage]
-public class Program
+public static class Program
 {
-    protected Program()
-    {
-    }
-
     public static async Task Main(string[] args)
     {
         var app = CreateWebApplication(args);
@@ -52,24 +50,24 @@ public class Program
         WebApplicationBuilder builder,
         IConfigurationRoot configuration)
     {
-        // Configure logging to use the CDP Platform standards.
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddHealthChecks();
         builder.Host.UseSerilog(CdpLogging.Configuration);
         builder.Services.AddProblemDetails();
         builder.Services.AddExceptionHandler<ApiExceptionHandler>();
+
         builder.Services.ConfigureHttpJsonOptions(options =>
         {
             options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower;
             options.SerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.SnakeCaseLower;
         });
 
-        // Add custom services
         builder.Services
             .AddPostgresDatabase(configuration)
             .AddRepositories(configuration)
-            .AddServices(configuration)
-            .AddValidators();
+            .AddRequests(configuration)
+            .AddValidators()
+            .AddServices(configuration);
     }
 
     [ExcludeFromCodeCoverage]
@@ -78,6 +76,8 @@ public class Program
         app.UseSerilogRequestLogging();
         app.UseExceptionHandler();
         app.UseRouting();
+        app.UseRequests();
+        app.UseHealthEndpoints();
         app.UsePublicEndpoints();
 
         return app;
