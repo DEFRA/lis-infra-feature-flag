@@ -1,4 +1,15 @@
 <Solution>
+  <Folder Name="/config/">
+    <File Path=".editorconfig" />
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Folder Name="/docs/">
+    <File Path="LICENSE" />
+    <File Path="README.md" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="src/Api/Api.csproj" />
     <Project Path="src/Models/Models.csproj" />
@@ -6,11 +17,17 @@
     <Project Path="src/Services/Services.csproj" />
     <Project Path="src\Database\Database.csproj" />
   </Folder>
+  <Folder Name="/src/config/">
+    <File Path="src/Directory.Build.props" />
+  </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Api.Tests/Api.Tests.csproj" />
     <Project Path="tests/Database.PostgreSQL.Tests/Database.PostgreSQL.Tests.csproj" />
     <Project Path="tests/Models.Tests/Models.Tests.csproj" />
     <Project Path="tests/Repositories.Tests/Repositories.Tests.csproj" />
     <Project Path="tests/Services.Tests/Services.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/config/">
+    <File Path="tests/Directory.Build.props" />
   </Folder>
 </Solution>

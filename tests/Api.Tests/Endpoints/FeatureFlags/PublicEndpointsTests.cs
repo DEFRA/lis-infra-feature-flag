@@ -2,13 +2,13 @@
 // Copyright (c) Defra. All rights reserved.
 // </copyright>
 
-namespace Lis.Infra.FeatureFlag.Api.Tests;
+namespace Lis.Infra.FeatureFlag.Api.Tests.Endpoints.FeatureFlags;
 
 using System.Reflection;
 using Lis.Infra.FeatureFlag.Api.Endpoints.Public;
-using Lis.Infra.FeatureFlag.Models.Requests;
-using Lis.Infra.FeatureFlag.Models.Responses;
-using Lis.Infra.FeatureFlag.Models.Responses.Common;
+using Lis.Infra.FeatureFlag.Models.Requests.FeatureFlags;
+using Lis.Infra.FeatureFlag.Models.Responses.FeatureFlags;
+using Lis.Infra.FeatureFlag.Models.Responses.FeatureFlags.Common;
 using Lis.Infra.FeatureFlag.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;

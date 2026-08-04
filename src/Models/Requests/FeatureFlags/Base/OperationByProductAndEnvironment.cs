@@ -2,7 +2,7 @@
 // Copyright (c) Defra. All rights reserved.
 // </copyright>
 
-namespace Lis.Infra.FeatureFlag.Models.Requests.Base;
+namespace Lis.Infra.FeatureFlag.Models.Requests.FeatureFlags.Base;
 
 public abstract class OperationByProductAndEnvironment
 {

@@ -2,7 +2,7 @@
 // Copyright (c) Defra. All rights reserved.
 // </copyright>
 
-namespace Lis.Infra.FeatureFlag.Models.Responses.Common;
+namespace Lis.Infra.FeatureFlag.Models.Responses.FeatureFlags.Common;
 
 public class FeatureFlagStatus()
 {

@@ -5,7 +5,7 @@
 namespace Lis.Infra.FeatureFlag.Models.Tests.Requests;
 
 using FluentValidation.TestHelper;
-using Lis.Infra.FeatureFlag.Models.Requests;
+using Lis.Infra.FeatureFlag.Models.Requests.FeatureFlags;
 
 public class GetFeatureFlagStatusValidatorTests
 {

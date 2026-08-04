@@ -2,9 +2,9 @@
 // Copyright (c) Defra. All rights reserved.
 // </copyright>
 
-namespace Lis.Infra.FeatureFlag.Models.Requests;
+namespace Lis.Infra.FeatureFlag.Models.Requests.FeatureFlags;
 
-using Lis.Infra.FeatureFlag.Models.Requests.Base;
+using Lis.Infra.FeatureFlag.Models.Requests.FeatureFlags.Base;
 
 public class GetFeatureFlagStatus : OperationByProductAndEnvironment
 {

@@ -23,7 +23,8 @@ public sealed partial class ApiExceptionHandler(ILogger<ApiExceptionHandler> log
             ExistenceRuleException => (StatusCodes.Status404NotFound, "Not Found", "https://httpstatuses.com/404"),
             ConflictRuleException => (StatusCodes.Status409Conflict, "Conflict", "https://httpstatuses.com/409"),
             BusinessRuleException => (StatusCodes.Status400BadRequest, "Bad Request", "https://httpstatuses.com/400"),
-            RequestValidationException => (StatusCodes.Status400BadRequest, "Bad Request", "https://httpstatuses.com/400"),
+            RequestValidationException => (StatusCodes.Status400BadRequest, "Bad Request",
+                "https://httpstatuses.com/400"),
             ArgumentException => (StatusCodes.Status400BadRequest, "Bad Request", "https://httpstatuses.com/400"),
             UnauthorizedAccessException => (StatusCodes.Status403Forbidden, "Forbidden",
                 "https://httpstatuses.com/403"),
@@ -31,6 +32,7 @@ public sealed partial class ApiExceptionHandler(ILogger<ApiExceptionHandler> log
         };
 
         var correlationId = httpContext.Request.Headers[RequestHeaderNames.CorrelationId].ToString();
+
         using (LogContext.PushProperty("CorrelationId", correlationId))
         using (LogContext.PushProperty("TraceId", httpContext.TraceIdentifier))
         using (LogContext.PushProperty("Path", httpContext.Request.Path.Value))
