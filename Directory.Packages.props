@@ -3,8 +3,8 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Defra.Livestock.Sdk.Api.Strategies.Abstractions" Version="0.4.0-prerelease.1" />
-    <PackageVersion Include="Defra.Livestock.Sdk.Api.Strategies" Version="0.3.0-prerelease.1" />
+    <PackageVersion Include="Defra.Livestock.Sdk.Api.Strategies.Abstractions" Version="0.0.1" />
+    <PackageVersion Include="Defra.Livestock.Sdk.Api.Strategies" Version="0.0.1" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.100.3" />
@@ -14,7 +14,6 @@
     <PackageVersion Include="Elastic.Serilog.Enrichers.Web" Version="9.0.0" />
     <PackageVersion Include="FluentValidation" Version="12.1.1" />
     <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
-    <PackageVersion Include="GovukNotify" Version="7.2.0" />
     <PackageVersion Include="Humanizer.Core" Version="3.0.10" />
     <PackageVersion Include="JsonSchema.Net" Version="9.2.1" />
     <PackageVersion Include="Microsoft.AspNetCore.Http" Version="2.3.9" />
